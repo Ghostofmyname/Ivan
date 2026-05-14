@@ -1,60 +1,52 @@
-import random
+from datetime import datetime
+
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 Token = "8701270803:AAH19wDRZ86l6VfnD9QjsmRrljima0dAdgs"
 
-facts = [
-    "Кївська Русь була однією із найбільших держав Європи у IX-XIII століттях",
-    "Стародавній Єгипет існував понад 300 років.",
-    "Римська імперія впала в 476 році.",
-    "Перша світова війна почалася у 1914 році.",
-    "Українська проголосила незалежність у 1991 році.",
-
-]
-
-ukraine_history = """
-   Історія України:
-   
-   -Київська Русь (IX-XIII ст. )
-   -Козацька держава (Гетьманщина)
-   -Україна у складі імперій
-   -Незалежність у 1991 році
-   """
-
-world_history = """
-Світова історія:
-
--Стародавній світ (Єгипет, Рим, Греція)
--Середньовіччя
--Новий час
--Сучасність
-"""
-
-async def start (update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Привіт! Я історичний гід \n\n"
-        "Команди\n"
-        "/fact - випадковий факт\n"
-        "/ukraine - історія України\n"
-        "/world - світова історія"
+        "Привіт! Я простий Telegram бот \n"
+        "Напиши \help щоб побачити команди."
     )
 
-    async def fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        await update.message.reply_text(random.choice(facts))
+async def help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "/start - запуск бота\n"
+        "/help - список команд\n"
+        "/about - інформація про бота\n"
+        "/time - час\n"
+        "/date - дата\n"
 
-        async def ukraine(update: Update, context: ContextTypes.DEFAULT_TYPE):
-              await update.message.reply_text(ukraine_history)
+    )
 
-        async def world(update: Update, context: ContextTypes.DEFAULT_TYPE):
-            await update.message.reply_text(world_history)
+async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+     "Я бот, створений у PyCharm на Python"
+    )
 
-        app = ApplicationBuilder().token(TOKEN).build()
+async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        await update.message.reply_text(
+            "Я бот, створений у PyCharm на Python"
+        )
 
-        app.add_handler(CommandHandler("start", start))
-        app.add_handler(CommandHandler("fact", fact))
-        app.add_handler(CommandHandler("ukraine", ukraine))
-        app.add_handler(CommandHandler("world", world))
+async def time(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    now = datetime.now().strftime("%H:%M:%S")
+    await update.message.reply_text(f"Зараз час: {now}")
 
-        print("Бот працює...")
-        app.run_polling()
+async def date(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        today = datetime.datetime.now().strftime("%d.%m.%Y")
+        await update.message.reply_text(f"Сьогодні: {today}")
+
+app = ApplicationBuilder().token(Token).build()
+
+app.add_handler(CommandHandler("time", time))
+app.add_handler(CommandHandler("date", date))
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("help", help))
+app.add_handler(CommandHandler("about", about))
+
+print("Бот запущений...")
+
+app.run_polling()
